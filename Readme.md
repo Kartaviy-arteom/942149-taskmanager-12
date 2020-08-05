@@ -1,7 +1,7 @@
 # Личный проект «Менеджер задач» [![Build status][travis-image]][travis-url]
 
 * Студент: [Артём Картавый](https://up.htmlacademy.ru/ecmascript/12/user/942149).
-* Наставник: `Неизвестно`.
+* Наставник: [Валерий Кобзарь](https://htmlacademy.ru/profile/id1431125).
 
 ---
 

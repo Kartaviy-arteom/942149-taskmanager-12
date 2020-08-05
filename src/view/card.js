@@ -1,6 +1,16 @@
-export const createCardHtml = () => {
+export const createCardHtml = (cardData) => {
+  const {description, dueDate, color, isFavorite, isArchive} = cardData;
+  const date = dueDate !== null ? dueDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`}) : ``;
+
+  const isExpired = (dueDate) => {
+    if (dueDate === null) {
+      return false;
+    }
+
+    3.8
+  };
   return (
-    `<article class="card">
+    `<article class="card card--${color}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -25,7 +35,7 @@ export const createCardHtml = () => {
           </div>
 
           <div class="card__textarea-wrap">
-            <p class="card__text">Example task with default color.</p>
+            <p class="card__text">${description}</p>
           </div>
 
           <div class="card__settings">
@@ -33,8 +43,7 @@ export const createCardHtml = () => {
               <div class="card__dates">
                 <div class="card__date-deadline">
                   <p class="card__input-deadline-wrap">
-                    <span class="card__date">23 September</span>
-                    <span class="card__time">16:15</span>
+                    <span class="card__date">${date}</span>
                   </p>
                 </div>
               </div>

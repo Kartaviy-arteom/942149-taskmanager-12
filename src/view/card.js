@@ -20,6 +20,9 @@ export const createCardHtml = (cardData) => {
   return (
     const deadlineClassName = isExpired(dueData) ? `card--deadline` : ``;
     const repeatingClassName = isRepeating(repeating) ? `card--repeat` : ``;
+    const archiveClassName = isArchive ? `card__btn--archive card__btn--disabled` : `card__btn--archive`;
+    const favoriteClassName = isFavorite ? `card__btn--favorites card__btn--disabled` : `card__btn--favorites`;
+  
     `<article class="card card--${color} ${deadlineClassName} ${repeatingClassName}">
       <div class="card__form">
         <div class="card__inner">
@@ -27,12 +30,12 @@ export const createCardHtml = (cardData) => {
             <button type="button" class="card__btn card__btn--edit">
               edit
             </button>
-            <button type="button" class="card__btn card__btn--archive">
+            <button type="button" class="${archiveClassName}">
               archive
             </button>
             <button
               type="button"
-              class="card__btn card__btn--favorites card__btn--disabled"
+              class="${favoriteClassNam}"
             >
               favorites
             </button>

@@ -51,9 +51,9 @@ export const createTask = () => {
   const repeating = dueDate === null ? generateRepeating() : {
     mo: false,
     tu: false,
-    we: !!(getRandomInteger(0, 1)),
+    we: false,
     th: false,
-    fr: !!(getRandomInteger(0, 1)),
+    fr: false,
     sa: false,
     su: false,
   };

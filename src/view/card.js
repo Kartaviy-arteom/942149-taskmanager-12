@@ -30,12 +30,12 @@ export const createCardHtml = (cardData) => {
             <button type="button" class="card__btn card__btn--edit">
               edit
             </button>
-            <button type="button" class="${archiveClassName}">
+            <button type="button" class="card__btn ${archiveClassName}">
               archive
             </button>
             <button
               type="button"
-              class="${favoriteClassNam}"
+              class="card__btn ${favoriteClassNam}"
             >
               favorites
             </button>

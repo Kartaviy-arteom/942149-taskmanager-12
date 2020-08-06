@@ -1,16 +1,26 @@
 export const createCardHtml = (cardData) => {
-  const {description, dueDate, color, isFavorite, isArchive} = cardData;
+  const {description, dueDate, repeating, color, isFavorite, isArchive} = cardData;
   const date = dueDate !== null ? dueDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`}) : ``;
 
   const isExpired = (dueDate) => {
     if (dueDate === null) {
       return false;
     }
-
-    3.8
+    let currentDate = new Date ();
+    currentDate.setHours(23, 59, 59, 999);
+    currentDate.setDate(currentDate);
+    
+    return currentDate.getTime() > dueDate.getTime();
   };
+  
+  const isRepeating = (repeating) => {
+    return Object.values(repeating).some(Boolean);
+  };
+  
   return (
-    `<article class="card card--${color}">
+    const deadlineClassName = isExpired(dueData) ? `card--deadline` : ``;
+    const repeatingClassName = isRepeating(repeating) ? `card--repeat` : ``;
+    `<article class="card card--${color} ${deadlineClassName} ${repeatingClassName}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">

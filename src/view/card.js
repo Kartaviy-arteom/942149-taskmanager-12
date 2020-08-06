@@ -1,28 +1,28 @@
+const isExpired = (dueDate) => {
+  if (dueDate === null) {
+    return false;
+  }
+
+  let currentDate = new Date();
+  currentDate.setHours(23, 59, 59, 999);
+  currentDate = new Date(currentDate);
+  return currentDate.getTime() > dueDate.getTime();
+};
+
+const isRepeating = (repeating) => {
+  return Object.values(repeating).some(Boolean);
+};
+
 export const createCardHtml = (cardData) => {
   const {description, dueDate, repeating, color, isFavorite, isArchive} = cardData;
   const date = dueDate !== null ? dueDate.toLocaleString(`en-US`, {day: `numeric`, month: `long`}) : ``;
 
-  const isExpired = (dueDate) => {
-    if (dueDate === null) {
-      return false;
-    }
-    let currentDate = new Date ();
-    currentDate.setHours(23, 59, 59, 999);
-    currentDate.setDate(currentDate);
-    
-    return currentDate.getTime() > dueDate.getTime();
-  };
-  
-  const isRepeating = (repeating) => {
-    return Object.values(repeating).some(Boolean);
-  };
-  
+  const deadlineClassName = isExpired(dueDate) ? `card--deadline` : ``;
+  const repeatingClassName = isRepeating(repeating) ? `card--repeat` : ``;
+  const archiveClassName = isArchive ? `card__btn--archive card__btn--disabled` : `card__btn--archive`;
+  const favoriteClassName = isFavorite ? `card__btn--favorites card__btn--disabled` : `card__btn--favorites`;
+
   return (
-    const deadlineClassName = isExpired(dueData) ? `card--deadline` : ``;
-    const repeatingClassName = isRepeating(repeating) ? `card--repeat` : ``;
-    const archiveClassName = isArchive ? `card__btn--archive card__btn--disabled` : `card__btn--archive`;
-    const favoriteClassName = isFavorite ? `card__btn--favorites card__btn--disabled` : `card__btn--favorites`;
-  
     `<article class="card card--${color} ${deadlineClassName} ${repeatingClassName}">
       <div class="card__form">
         <div class="card__inner">
@@ -35,7 +35,7 @@ export const createCardHtml = (cardData) => {
             </button>
             <button
               type="button"
-              class="card__btn ${favoriteClassNam}"
+              class="card__btn ${favoriteClassName}"
             >
               favorites
             </button>

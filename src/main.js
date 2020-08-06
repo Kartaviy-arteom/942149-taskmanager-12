@@ -8,7 +8,7 @@ import {createShowMoreBtnHtml} from "./view/show-more-btn.js";
 import {createEditFormHtml} from "./view/edit-form.js";
 import {createTask} from "./mock/task.js";
 
-const CARD_QUANTITY = 3;
+const CARD_QUANTITY = 4;
 const tasks = new Array(CARD_QUANTITY).fill().map(createTask);
 
 const pageMainBlock = document.querySelector(`.main`);
@@ -25,8 +25,8 @@ const boardContainer = pageMainBlock.querySelector(`.board.container`);
 render(boardContainer, createSortListHtml(), `afterbegin`);
 render(boardContainer, createBordTaskListHtml(), `beforeend`);
 const bordTaskList = boardContainer.querySelector(`.board__tasks`);
-for (let i = 0; i < CARD_QUANTITY; i++) {
+for (let i = 1; i < CARD_QUANTITY; i++) {
   render(bordTaskList, createCardHtml(tasks[i]), `beforeend`);
 }
 render(boardContainer, createShowMoreBtnHtml(), `beforeend`);
-render(bordTaskList, createEditFormHtml(), `afterbegin`);
+render(bordTaskList, createEditFormHtml(tasks[0]), `afterbegin`);

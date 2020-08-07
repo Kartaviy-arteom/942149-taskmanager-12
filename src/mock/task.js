@@ -1,9 +1,5 @@
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+import {COLORS} from "../consts.js";
+import {getRandomInteger} from "../utils.js";
 
 const generateDescription = () => {
   const descriptions = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];
@@ -42,8 +38,7 @@ const generateRepeating = () => {
 };
 
 const getRandomColor = () => {
-  const colors = [`black`, `yellow`, `blue`, `green`, `pink`];
-  return colors[getRandomInteger(0, colors.length - 1)];
+  return COLORS[getRandomInteger(0, COLORS.length - 1)];
 };
 
 export const createTask = () => {

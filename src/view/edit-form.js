@@ -1,5 +1,22 @@
 import {COLORS} from "../consts.js";
-import {isExpired, isRepeating, humanizeDueDate} from "../utils.js";
+import {isExpired, isRepeating, humanizeDueDate, createElement} from "../utils.js";
+
+const BLANK_EDIT_FORM = {
+  color: COLORS[0],
+  description: ``,
+  dueDate: null,
+  repeating: {
+    mo: false,
+    tu: false,
+    we: false,
+    th: false,
+    fr: false,
+    sa: false,
+    su: false
+  },
+  isArchive: false,
+  isFavorite: false
+};
 
 const createTaskEditDateTemplate = (dueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
@@ -58,20 +75,7 @@ const createTaskEditRepeatingTemplate = (repeating) => {
 };
 
 export const createEditFormHtml = (editFormData) => {
-  const {
-    color = `black`,
-    description = ``,
-    dueDate = null,
-    repeating = {
-      mo: false,
-      tu: false,
-      we: false,
-      th: false,
-      fr: false,
-      sa: false,
-      su: false
-    }
-  } = editFormData;
+  const {color, description, dueDate, repeating} = editFormData;
 
   const dateTemplate = createTaskEditDateTemplate(dueDate);
   const deadlineClassName = isExpired(dueDate) ? `card--deadline` : ``;
@@ -123,3 +127,25 @@ export const createEditFormHtml = (editFormData) => {
     </article>`
   );
 };
+
+export default class EditForm {
+  constructor(formData) {
+    this._formData = formData || BLANK_EDIT_FORM;
+    this._element = null;
+  }
+
+  _getTemplate() {
+    return createEditFormHtml(this._formData);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

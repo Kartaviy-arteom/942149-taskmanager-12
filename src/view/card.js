@@ -1,6 +1,6 @@
-import {isExpired, isRepeating, humanizeDueDate} from "../utils.js";
+import {isExpired, isRepeating, humanizeDueDate, createElement} from "../utils.js";
 
-export const createCardHtml = (cardData) => {
+const createCardHtml = (cardData) => {
   const {description, dueDate, repeating, color, isFavorite, isArchive} = cardData;
   const date = dueDate !== null ? humanizeDueDate(dueDate) : ``;
 
@@ -54,3 +54,25 @@ export const createCardHtml = (cardData) => {
     </article>`
   );
 };
+
+export default class Card {
+  constructor(cardData) {
+    this._cardData = cardData;
+    this._element = null;
+  }
+
+  _getTemplate() {
+    return createCardHtml(this._cardData);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

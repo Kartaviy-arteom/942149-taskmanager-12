@@ -1,4 +1,6 @@
-export const createControlPanelHtml = () => {
+import {createElement} from "../utils.js";
+
+const createControlPanelHtml = () => {
   return (
     `<section class="control__btn-wrap">
       <input
@@ -30,3 +32,24 @@ export const createControlPanelHtml = () => {
     </section>`
   );
 };
+
+export default class ControlPanel {
+  constructor() {
+    this._element = null;
+  }
+
+  _getTemplate() {
+    return createControlPanelHtml();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this._getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

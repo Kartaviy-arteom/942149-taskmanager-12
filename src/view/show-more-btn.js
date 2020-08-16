@@ -6,7 +6,7 @@ const createShowMoreBtnHtml = () => {
   );
 };
 
-export default class ControlPanel {
+export default class ShowMoreBtn {
   constructor() {
     this._element = null;
   }

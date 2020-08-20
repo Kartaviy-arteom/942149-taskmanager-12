@@ -9,10 +9,17 @@ import {createEditFormHtml} from "./view/edit-form.js";
 import {createTask} from "./mock/task.js";
 import {generateFilter} from "./mock/filter.js";
 
-const CARD_QUANTITY = 15;
+const CARD_QUANTITY = 35;
 const TASK_COUNT_PER_STEP = 8;
+const GROUP_COUNT_PER_STEP = 1;
 
-const tasks = new Array(CARD_QUANTITY).fill().map(createTask);
+const tasks = Array.from(Array(CARD_QUANTITY), createTask);
+let transformedTasks = [];
+for (let i = 0; i < tasks.length; i += TASK_COUNT_PER_STEP) {
+  transformedTasks.push(tasks.slice(i, i + TASK_COUNT_PER_STEP));
+}
+const numberOfTasksGroup = transformedTasks.length;
+
 const filters = generateFilter(tasks);
 
 const pageMainBlock = document.querySelector(`.main`);
@@ -30,24 +37,22 @@ render(boardContainer, createSortListHtml(), `afterbegin`);
 render(boardContainer, createBordTaskListHtml(), `beforeend`);
 const bordTaskList = boardContainer.querySelector(`.board__tasks`);
 
-for (let i = 1; i < Math.min(tasks.length, TASK_COUNT_PER_STEP); i++) {
-  render(bordTaskList, createCardHtml(tasks[i]), `beforeend`);
-}
+transformedTasks[0].slice(1).forEach((el) => render(bordTaskList, createCardHtml(el), `beforeend`));
 
 render(bordTaskList, createEditFormHtml(tasks[0]), `afterbegin`);
 
-if (tasks.length > TASK_COUNT_PER_STEP) {
-  let renderedTaskCount = TASK_COUNT_PER_STEP;
+if (numberOfTasksGroup > GROUP_COUNT_PER_STEP) {
+  let renderedTaskGroupCount = GROUP_COUNT_PER_STEP;
   render(boardContainer, createShowMoreBtnHtml(), `beforeend`);
 
   const loadMoreButton = boardContainer.querySelector(`.load-more`);
 
   loadMoreButton.addEventListener(`click`, (evt) => {
     evt.preventDefault();
-    tasks.slice(renderedTaskCount, renderedTaskCount + TASK_COUNT_PER_STEP).forEach((task) => render(bordTaskList, createCardHtml(task), `beforeend`));
-    renderedTaskCount += TASK_COUNT_PER_STEP;
+    transformedTasks[renderedTaskGroupCount].forEach((el) => render(bordTaskList, createCardHtml(el), `beforeend`));
+    renderedTaskGroupCount += GROUP_COUNT_PER_STEP;
 
-    if (renderedTaskCount >= tasks.length) {
+    if (renderedTaskGroupCount >= numberOfTasksGroup) {
       loadMoreButton.remove();
     }
   });

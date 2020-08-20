@@ -14,6 +14,7 @@ const TASK_COUNT_PER_STEP = 8;
 const GROUP_COUNT_PER_STEP = 1;
 
 const tasks = Array.from(Array(CARD_QUANTITY), createTask);
+
 let transformedTasks = [];
 for (let i = 0; i < tasks.length; i += TASK_COUNT_PER_STEP) {
   transformedTasks.push(tasks.slice(i, i + TASK_COUNT_PER_STEP));

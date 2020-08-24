@@ -1,4 +1,4 @@
-import {COLORS} from "../consts.js";
+import {CARD_MARK_COLORS} from "../consts.js";
 import {getRandomInteger} from "../utils.js";
 
 const generateDescription = () => {
@@ -26,32 +26,25 @@ const generateDate = () => {
 };
 
 const generateRepeating = () => {
+  const isDueDate = Boolean(generateDate());
   return {
     mo: false,
     tu: false,
-    we: !!(getRandomInteger(0, 1)),
+    we: isDueDate ? false : !!(getRandomInteger(0, 1)),
     th: false,
-    fr: !!(getRandomInteger(0, 1)),
+    fr: isDueDate ? false : !!(getRandomInteger(0, 1)),
     sa: false,
     su: false,
   };
 };
 
 const getRandomColor = () => {
-  return COLORS[getRandomInteger(0, COLORS.length - 1)];
+  return CARD_MARK_COLORS[getRandomInteger(0, CARD_MARK_COLORS.length - 1)];
 };
 
 export const createTask = () => {
   const dueDate = generateDate();
-  const repeating = dueDate === null ? generateRepeating() : {
-    mo: false,
-    tu: false,
-    we: false,
-    th: false,
-    fr: false,
-    sa: false,
-    su: false,
-  };
+  const repeating = generateRepeating();
 
   return {
     description: generateDescription(),

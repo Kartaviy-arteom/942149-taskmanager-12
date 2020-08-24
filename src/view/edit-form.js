@@ -1,8 +1,8 @@
-import {COLORS} from "../consts.js";
+import {CARD_MARK_COLORS} from "../consts.js";
 import {isExpired, isRepeating, humanizeDueDate, createElement} from "../utils.js";
 
 const BLANK_EDIT_FORM = {
-  color: COLORS[0],
+  color: CARD_MARK_COLORS[0],
   description: ``,
   dueDate: null,
   repeating: {
@@ -38,7 +38,7 @@ const createTaskEditDateTemplate = (dueDate) => {
 
 const createTaskEditColorsTemplate = (currentColor) => {
 
-  return COLORS.map((color) => `<input
+  return CARD_MARK_COLORS.map((color) => `<input
     type="radio"
     id="color-${color}"
     class="card__color-input card__color-input--${color} visually-hidden"

@@ -9,13 +9,21 @@ import EditForm from "./view/edit-form.js";
 import NoCard from "./view/no-card.js";
 import {createTask} from "./mock/task.js";
 import {generateFilter} from "./mock/filter.js";
-import {render, RenderPosition} from "./utils.js";
+import {render} from "./utils.js";
+import {RenderPosition} from "./consts.js";
 
 const CARD_QUANTITY = 110;
 const TASK_COUNT_PER_STEP = 8;
 const ESC_KEY_CODE = 27;
+const GROUP_COUNT_PER_STEP = 1;
 
-const tasks = new Array(CARD_QUANTITY).fill().map(createTask);
+const tasks = Array.from(Array(CARD_QUANTITY), createTask);
+let transformedTasks = [];
+for (let i = 0; i < tasks.length; i += TASK_COUNT_PER_STEP) {
+  transformedTasks.push(tasks.slice(i, i + TASK_COUNT_PER_STEP));
+}
+const numberOfTasksGroup = transformedTasks.length;
+
 const filters = generateFilter(tasks);
 
 const renderCard = (cardListElement, cardData) => {
@@ -61,7 +69,7 @@ render(pageMainBlock, new FilterPanel(filters).getElement(), RenderPosition.BEFO
 const boardContainer = new BoardContainer();
 render(pageMainBlock, boardContainer.getElement(), RenderPosition.BEFOREEND);
 
-const renderCardBoard = (wrapper, cardsData) => {
+const renderCardBoard = (wrapper) => {
   if (tasks.every((task) => task.isArchive)) {
     render(wrapper, new NoCard().getElement(), RenderPosition.BEFOREEND);
     return;
@@ -72,22 +80,19 @@ const renderCardBoard = (wrapper, cardsData) => {
   const bordTaskList = new BordTaskList();
   render(wrapper, bordTaskList.getElement(), RenderPosition.BEFOREEND);
 
+  transformedTasks[0].forEach((el) => renderCard(bordTaskList.getElement(), el, `beforeend`));
 
-  for (let i = 0; i < Math.min(cardsData.length, TASK_COUNT_PER_STEP); i++) {
-    renderCard(bordTaskList.getElement(), cardsData[i]);
-  }
-
-  if (cardsData.length > TASK_COUNT_PER_STEP) {
-    let renderTemplateedTaskCount = TASK_COUNT_PER_STEP;
+  if (numberOfTasksGroup > GROUP_COUNT_PER_STEP) {
+    let renderedTaskGroupCount = GROUP_COUNT_PER_STEP;
     const showMoreBtnComponent = new ShowMoreBtn();
     render(boardContainer.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
 
     showMoreBtnComponent.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      cardsData.slice(renderTemplateedTaskCount, renderTemplateedTaskCount + TASK_COUNT_PER_STEP).forEach((task) => renderCard(bordTaskList.getElement(), task));
-      renderTemplateedTaskCount += TASK_COUNT_PER_STEP;
+      transformedTasks[renderedTaskGroupCount].forEach((el) => renderCard(bordTaskList.getElement(), el));
+      renderedTaskGroupCount += GROUP_COUNT_PER_STEP;
 
-      if (renderTemplateedTaskCount >= cardsData.length) {
+      if (renderedTaskGroupCount >= numberOfTasksGroup) {
         showMoreBtnComponent.getElement().remove();
         showMoreBtnComponent.removeElement();
       }
@@ -95,4 +100,4 @@ const renderCardBoard = (wrapper, cardsData) => {
   }
 };
 
-renderCardBoard(boardContainer.getElement(), tasks);
+renderCardBoard(boardContainer.getElement());

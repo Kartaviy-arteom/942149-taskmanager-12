@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const createControlPanelHtml = () => {
   return (
@@ -33,23 +33,8 @@ const createControlPanelHtml = () => {
   );
 };
 
-export default class ControlPanel {
-  constructor() {
-    this._element = null;
-  }
-
+export default class ControlPanel extends BaseComponent {
   _getTemplate() {
     return createControlPanelHtml();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

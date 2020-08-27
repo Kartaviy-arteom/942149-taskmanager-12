@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const createSortListHtml = () => {
   return (
@@ -10,23 +10,8 @@ const createSortListHtml = () => {
   );
 };
 
-export default class SortList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SortList extends BaseComponent {
   _getTemplate() {
     return createSortListHtml();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

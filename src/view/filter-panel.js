@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const createFilterTemplate = (filter, isChecked) => {
   const {name, count} = filter;
@@ -28,25 +28,13 @@ const createFilterPanelHtml = (filterItems) => {
   </section>`;
 };
 
-export default class FilterPanel {
+export default class FilterPanel extends BaseComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   _getTemplate() {
     return createFilterPanelHtml(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

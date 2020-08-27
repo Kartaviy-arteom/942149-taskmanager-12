@@ -1,5 +1,6 @@
 import {CARD_MARK_COLORS} from "../consts.js";
-import {isExpired, isRepeating, humanizeDueDate, createElement} from "../utils.js";
+import {isExpired, isRepeating, humanizeDueDate} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const BLANK_EDIT_FORM = {
   color: CARD_MARK_COLORS[0],
@@ -128,24 +129,13 @@ export const createEditFormHtml = (editFormData) => {
   );
 };
 
-export default class EditForm {
+export default class EditForm extends BaseComponent {
   constructor(formData) {
+    super();
     this._formData = formData || BLANK_EDIT_FORM;
-    this._element = null;
   }
 
   _getTemplate() {
     return createEditFormHtml(this._formData);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

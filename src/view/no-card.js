@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const createNoCardTemplate = () => {
   return `<p class="board__no-tasks">
@@ -6,24 +6,8 @@ const createNoCardTemplate = () => {
   </p>`;
 };
 
-export default class NoCard {
-  constructor() {
-    this._element = null;
-  }
-
-  getTemplate() {
+export default class NoCard extends BaseComponent {
+  _getTemplate() {
     return createNoCardTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

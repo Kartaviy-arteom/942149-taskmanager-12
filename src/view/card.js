@@ -1,4 +1,5 @@
-import {isExpired, isRepeating, humanizeDueDate, createElement} from "../utils.js";
+import {isExpired, isRepeating, humanizeDueDate} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const createCardHtml = (cardData) => {
   const {description, dueDate, repeating, color, isFavorite, isArchive} = cardData;
@@ -55,24 +56,24 @@ const createCardHtml = (cardData) => {
   );
 };
 
-export default class Card {
+export default class Card extends BaseComponent {
   constructor(cardData) {
+    super();
     this._cardData = cardData;
-    this._element = null;
+    this._editHandler = this._editHandler.bind(this);
   }
 
   _getTemplate() {
     return createCardHtml(this._cardData);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-    return this._element;
+  _editHandler(evt) {
+    evt.preventDefault();
+    this._callback.edit();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditHandler(callback) {
+    this._callback.edit = callback;
+    this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, this._callback.edit);
   }
 }

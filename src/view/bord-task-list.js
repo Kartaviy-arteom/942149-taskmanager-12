@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import BaseComponent from "./base-component.js";
 
 const createBordTaskListHtml = () => {
   return (
@@ -7,23 +7,8 @@ const createBordTaskListHtml = () => {
   );
 };
 
-export default class BordTaskList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class BordTaskList extends BaseComponent {
   _getTemplate() {
     return createBordTaskListHtml();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this._getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -12,7 +12,7 @@ import {generateFilter} from "./mock/filter.js";
 import {render} from "./utils.js";
 import {RenderPosition} from "./consts.js";
 
-const CARD_QUANTITY = 110;
+const CARD_QUANTITY = 70;
 const TASK_COUNT_PER_STEP = 8;
 const ESC_KEY_CODE = 27;
 const GROUP_COUNT_PER_STEP = 1;
@@ -46,7 +46,7 @@ const renderCard = (cardListElement, cardData) => {
     }
   };
 
-  cardComponent.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, () => {
+  cardComponent.setEditHandler(() => {
     replaceCardToEditForm();
     document.addEventListener(`keydown`, onEscKeyDown);
   });
@@ -87,8 +87,7 @@ const renderCardBoard = (wrapper) => {
     const showMoreBtnComponent = new ShowMoreBtn();
     render(boardContainer.getElement(), showMoreBtnComponent.getElement(), RenderPosition.BEFOREEND);
 
-    showMoreBtnComponent.getElement().addEventListener(`click`, (evt) => {
-      evt.preventDefault();
+    showMoreBtnComponent.setClickHandler(() => {
       transformedTasks[renderedTaskGroupCount].forEach((el) => renderCard(bordTaskList.getElement(), el));
       renderedTaskGroupCount += GROUP_COUNT_PER_STEP;
 

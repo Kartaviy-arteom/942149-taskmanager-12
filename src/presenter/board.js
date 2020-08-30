@@ -8,6 +8,8 @@ import EditForm from "../view/edit-form.js";
 import {render} from "../utils/render.js";
 import {RenderPosition} from "../consts.js";
 import BaseComponent from "../view/base-component.js";
+import {sortTaskUp, sortTaskDown} from "../utils/card.js";
+import {sortType} from "../consts.js";
 
 const TASK_COUNT_PER_STEP = 8;
 const GROUP_COUNT_PER_STEP = 1;
@@ -21,17 +23,25 @@ export default class BoardPresenter {
     this._boardTaskListComponent = new BordTaskList();
     this._boardComponent = new Board();
     this._showMoreBtnComponent = new ShowMoreBtn();
+
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+    this._currentSortType = sortType.DEFAULT;
+    this._transformedCardsData = [];
   }
 
   init(cardsData) {
     this._cardsData = cardsData.slice();
-    this._transformedCardsData = [];
-    for (let i = 0; i < cardsData.length; i += TASK_COUNT_PER_STEP) {
-      this._transformedCardsData.push(cardsData.slice(i, i + TASK_COUNT_PER_STEP));
-    }
+    this._sourcedBoardCards = cardsData.slice();
+    this._transformCardData();
     this._numberOfTasksGroup = this._transformedCardsData.length;
     render(this._boardWrapper, this._boardComponent, RenderPosition.BEFOREEND);
     this._renderBoard();
+  }
+
+  _transformCardData() {
+    for (let i = 0; i < this._cardsData.length; i += TASK_COUNT_PER_STEP) {
+      this._transformedCardsData.push(this._cardsData.slice(i, i + TASK_COUNT_PER_STEP));
+    }
   }
 
   _renderNoCard() {
@@ -79,11 +89,47 @@ export default class BoardPresenter {
     this._transformedCardsData[groupNumber].forEach((el) => this._renderCard(this._boardTaskListComponent, el));
   }
 
-  _renderSortList() {
-    render(this._boardComponent, this._sortListComponent, RenderPosition.AFTERBEGIN);
+  _handleSortTypeChange(chosenSortType) {
+    if (this._currentSortType === chosenSortType) {
+      return;
+    }
+
+    this._sortCards(chosenSortType);
+    this._clearBordCardList();
+    this._transformedCardsData = [];
+    this._transformCardData();
+    this._renderGroupOfCards(GROUP_COUNT_PER_STEP);
+    if (this._numberOfTasksGroup > GROUP_COUNT_PER_STEP) {
+      this._renderShowMoreBtn();
+    }
   }
 
-  _renderBordTaskList() {
+  _sortCards(chosenSortType) {
+    switch (chosenSortType) {
+      case sortType.DATE_UP:
+        this._cardsData.sort(sortTaskUp);
+        break;
+      case sortType.DATE_DOWN:
+        this._cardsData.sort(sortTaskDown);
+        break;
+      default:
+        this._cardsData = this._sourcedBoardCards.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _renderSortList() {
+    render(this._boardComponent, this._sortListComponent, RenderPosition.AFTERBEGIN);
+    this._sortListComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+  }
+
+  _clearBordCardList() {
+    this._boardTaskListComponent.getElement().innerHTML = ``;
+    this._renderedTaskGroupCount = GROUP_COUNT_PER_STEP;
+  }
+
+  _renderBordCardList() {
     render(this._boardComponent, this._boardTaskListComponent, RenderPosition.BEFOREEND);
   }
 
@@ -95,7 +141,7 @@ export default class BoardPresenter {
 
     this._renderSortList();
 
-    this._renderBordTaskList();
+    this._renderBordCardList();
 
     this._renderGroupOfCards(0);
 
@@ -111,12 +157,12 @@ export default class BoardPresenter {
 
   _renderShowMoreBtn() {
     render(this._boardComponent, this._showMoreBtnComponent, RenderPosition.BEFOREEND);
-    let renderedTaskGroupCount = GROUP_COUNT_PER_STEP;
+    this._renderedTaskGroupCount = GROUP_COUNT_PER_STEP;
     this._showMoreBtnComponent.setClickHandler(() => {
-      this._renderGroupOfCards(renderedTaskGroupCount);
-      renderedTaskGroupCount += GROUP_COUNT_PER_STEP;
+      this._renderGroupOfCards(this._renderedTaskGroupCount);
+      this._renderedTaskGroupCount += GROUP_COUNT_PER_STEP;
 
-      if (renderedTaskGroupCount >= this._numberOfTasksGroup) {
+      if (this._renderedTaskGroupCount >= this._numberOfTasksGroup) {
         this._removeShowMoreBtn();
       }
     });

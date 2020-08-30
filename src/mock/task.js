@@ -1,5 +1,5 @@
 import {CARD_MARK_COLORS} from "../consts.js";
-import {getRandomInteger} from "../utils.js";
+import {getRandomInteger} from "../utils/common.js";
 
 const generateDescription = () => {
   const descriptions = [`Изучить теорию`, `Сделать домашку`, `Пройти интенсив на соточку`];

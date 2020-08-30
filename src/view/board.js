@@ -7,7 +7,7 @@ const createBoardContainerHtml = () => {
   );
 };
 
-export default class BoardContainer extends BaseComponent {
+export default class Board extends BaseComponent {
   _getTemplate() {
     return createBoardContainerHtml();
   }

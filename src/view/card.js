@@ -1,4 +1,4 @@
-import {isExpired, isRepeating, humanizeDueDate} from "../utils.js";
+import {isExpired, isRepeating, humanizeDueDate} from "../utils/card.js";
 import BaseComponent from "./base-component.js";
 
 const createCardHtml = (cardData) => {

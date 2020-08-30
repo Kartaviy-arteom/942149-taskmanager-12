@@ -1,4 +1,4 @@
-import {isExpired, isRepeating, isExpiringToday} from "../utils.js";
+import {isExpired, isRepeating, isExpiringToday} from "../utils/card.js";
 
 export const generateFilter = (tasks) => {
   return [

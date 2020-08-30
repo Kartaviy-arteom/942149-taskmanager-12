@@ -1,5 +1,5 @@
 import {CARD_MARK_COLORS} from "../consts.js";
-import {isExpired, isRepeating, humanizeDueDate} from "../utils.js";
+import {isExpired, isRepeating, humanizeDueDate} from "../utils/card.js";
 import BaseComponent from "./base-component.js";
 
 const BLANK_EDIT_FORM = {
@@ -133,9 +133,20 @@ export default class EditForm extends BaseComponent {
   constructor(formData) {
     super();
     this._formData = formData || BLANK_EDIT_FORM;
+    this._submitHandler = this._submitHandler.bind(this);
   }
 
   _getTemplate() {
     return createEditFormHtml(this._formData);
+  }
+
+  _submitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submit();
+  }
+
+  setSubmitHandler(callback) {
+    this._callback.submit = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._callback.submit);
   }
 }

@@ -60,20 +60,24 @@ export default class Card extends BaseComponent {
   constructor(cardData) {
     super();
     this._cardData = cardData;
-    this._editHandler = this._editHandler.bind(this);
   }
 
   _getTemplate() {
     return createCardHtml(this._cardData);
   }
 
-  _editHandler(evt) {
-    evt.preventDefault();
-    this._callback.edit();
-  }
-
   setEditHandler(callback) {
     this._callback.edit = callback;
-    this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, this._callback.edit);
+    this._btnEdit = this.getElement().querySelector(`.card__btn--edit`);
+    this._btnEdit.addEventListener(`click`, this._callback.edit);
+  }
+
+  _removeEditHandler() {
+    this._btnEdit.removeEventListener(`click`, this._callback.edit);
+  }
+
+  removeElement() {
+    this._removeEditHandler();
+    super.removeElement();
   }
 }

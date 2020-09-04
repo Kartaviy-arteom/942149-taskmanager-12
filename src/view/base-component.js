@@ -22,6 +22,7 @@ export default class BaseComponent {
   }
 
   removeElement() {
+    this._element.remove();
     this._element = null;
   }
 }

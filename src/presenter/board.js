@@ -71,7 +71,8 @@ export default class BoardPresenter {
       }
     };
 
-    cardComponent.setEditHandler(() => {
+    cardComponent.setEditHandler((evt) => {
+      evt.preventDefault();
       replaceCardToEditForm();
       document.addEventListener(`keydown`, onEscKeyDown);
     });
@@ -150,20 +151,16 @@ export default class BoardPresenter {
     }
   }
 
-  _removeShowMoreBtn() {
-    this._showMoreBtnComponent.getElement().remove();
-    this._showMoreBtnComponent.removeElement();
-  }
-
   _renderShowMoreBtn() {
     render(this._boardComponent, this._showMoreBtnComponent, RenderPosition.BEFOREEND);
     this._renderedTaskGroupCount = GROUP_COUNT_PER_STEP;
-    this._showMoreBtnComponent.setClickHandler(() => {
+    this._showMoreBtnComponent.setClickHandler((evt) => {
+      evt.preventDefault();
       this._renderGroupOfCards(this._renderedTaskGroupCount);
       this._renderedTaskGroupCount += GROUP_COUNT_PER_STEP;
 
       if (this._renderedTaskGroupCount >= this._numberOfTasksGroup) {
-        this._removeShowMoreBtn();
+        this._showMoreBtnComponent.removeElement();
       }
     });
   }

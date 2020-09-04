@@ -16,6 +16,5 @@ const controlPanelWrapper = pageMainBlock.querySelector(`.main__control`);
 
 render(controlPanelWrapper, new ControlPanel().getElement(), RenderPosition.BEFOREEND);
 render(pageMainBlock, new FilterPanel(filters).getElement(), RenderPosition.BEFOREEND);
-
 const boardPresenter = new BoardPresenter(pageMainBlock);
 boardPresenter.init(tasks);

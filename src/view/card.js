@@ -1,4 +1,4 @@
-import {isExpired, isRepeating, humanizeDueDate} from "../utils/card.js";
+import {isExpired, isCardRepeating, humanizeDueDate} from "../utils/card.js";
 import BaseComponent from "./base-component.js";
 
 const createCardHtml = (cardData) => {
@@ -6,7 +6,7 @@ const createCardHtml = (cardData) => {
   const date = dueDate !== null ? humanizeDueDate(dueDate) : ``;
 
   const deadlineClassName = isExpired(dueDate) ? `card--deadline` : ``;
-  const repeatingClassName = isRepeating(repeating) ? `card--repeat` : ``;
+  const repeatingClassName = isCardRepeating(repeating) ? `card--repeat` : ``;
   const archiveClassName = isArchive ? `card__btn--archive card__btn--disabled` : `card__btn--archive`;
   const favoriteClassName = isFavorite ? `card__btn--favorites card__btn--disabled` : `card__btn--favorites`;
 
@@ -72,11 +72,31 @@ export default class Card extends BaseComponent {
     this._btnEdit.addEventListener(`click`, this._callback.edit);
   }
 
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._callback.favoriteClick);
+  }
+
+  setArchiveClickHandler(callback) {
+    this._callback.archiveClick = callback;
+    this.getElement().querySelector(`.card__btn--archive`).addEventListener(`click`, this._callback.archiveClick);
+  }
+
+
+  _removeFavoriteClickHandler() {
+    this.getElement().querySelector(`.card__btn--favorites`).removeEventListener(`click`, this._callback.favoriteClick);
+  }
+
+  _removeArchiveClickHandler() {
+    this.getElement().querySelector(`.card__btn--archive`).removeEventListener(`click`, this._callback.archiveClick);
+  }
   _removeEditHandler() {
     this._btnEdit.removeEventListener(`click`, this._callback.edit);
   }
 
   removeElement() {
+    this._removeFavoriteClickHandler();
+    this._removeArchiveClickHandler();
     this._removeEditHandler();
     super.removeElement();
   }

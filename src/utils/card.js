@@ -1,5 +1,5 @@
 
-export const isRepeating = (repeating) => {
+export const isCardRepeating = (repeating) => {
   return Object.values(repeating).some(Boolean);
 };
 

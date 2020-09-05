@@ -1,4 +1,4 @@
-import {isExpired, isRepeating, isExpiringToday} from "../utils/card.js";
+import {isExpired, isCardRepeating, isExpiringToday} from "../utils/card.js";
 
 export const generateFilter = (tasks) => {
   return [
@@ -22,7 +22,7 @@ export const generateFilter = (tasks) => {
       name: `repeating`,
       count: tasks
       .filter((task) => !task.isArchive)
-      .filter((task) => isRepeating(task.repeating)).length
+      .filter((task) => isCardRepeating(task.repeating)).length
     },
     {
       name: `archive`,

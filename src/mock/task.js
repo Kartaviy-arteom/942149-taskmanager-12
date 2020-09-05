@@ -42,11 +42,14 @@ const getRandomColor = () => {
   return CARD_MARK_COLORS[getRandomInteger(0, CARD_MARK_COLORS.length - 1)];
 };
 
+const generateID = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 export const createTask = () => {
   const dueDate = generateDate();
   const repeating = generateRepeating();
 
   return {
+    id: generateID(),
     description: generateDescription(),
     dueDate,
     repeating,

@@ -103,9 +103,8 @@ export default class Card {
     document.addEventListener(`keydown`, this._onEscKeyDown);
   }
 
-  _onEditFormSubmit(evt) {
-    evt.preventDefault();
-    this._changeData(this._cardData);
+  _onEditFormSubmit(data) {
+    this._changeData(data);
     this._replaceEditToCard();
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }

@@ -23,17 +23,7 @@ const createTaskEditDateTemplate = (dueDate, isDueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
       date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
     </button>
-    ${isDueDate ? `<fieldset class="card__date-deadline">
-      <label class="card__input-deadline-wrap">
-        <input
-          class="card__date"
-          type="text"
-          placeholder=""
-          name="date"
-          value="${humanizeDueDate(dueDate)}"
-        />
-      </label>
-    </fieldset>` : ``}
+    ${isDueDate ? `<fieldset class="card__date-deadline"><label class="card__input-deadline-wrap"><input class="card__date" type="text" placeholder="" name="date" value="${humanizeDueDate(dueDate)}"/></label></fieldset>` : ``}
   `;
 };
 
@@ -79,8 +69,8 @@ export const createEditFormHtml = (editFormData) => {
   const {color, description, dueDate, repeating, isDueDate, isRepeating} = editFormData;
 
   const dateTemplate = createTaskEditDateTemplate(dueDate, isDueDate);
-  const deadlineClassName = isExpired(dueDate) ? `card--deadline` : ``;
-  const repeatingClassName = isCardRepeating(isRepeating) ? `card--repeat` : ``;
+  const deadlineClassName = isDueDate ? `card--deadline` : ``;
+  const repeatingClassName = isRepeating ? `card--repeat` : ``;
 
   return (
     `<article class="card card--edit card--${color} ${deadlineClassName} ${repeatingClassName}">
@@ -135,11 +125,48 @@ export default class EditForm extends BaseComponent {
     this._formData = formData;
     this._data = this._parseCardToData(this._formData);
     this._submitHandler = this._submitHandler.bind(this);
-    this._form = this.getElement().querySelector(`form`);
+
+    this._setInnerHandlers();
   }
 
   _getTemplate() {
     return createEditFormHtml(this._data);
+  }
+
+  _setInnerHandlers() {
+    this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
+    this._dateDeadlineToggleHandler = this._dateDeadlineToggleHandler.bind(this);
+    this._repeatingToggleHandler = this._repeatingToggleHandler.bind(this);
+
+    this.getElement().querySelector(`.card__text`).addEventListener(`input`, this._descriptionInputHandler);
+    this.getElement().querySelector(`.card__date-deadline-toggle`).addEventListener(`click`, this._dateDeadlineToggleHandler);
+    this.getElement().querySelector(`.card__repeat-toggle`).addEventListener(`click`, this._repeatingToggleHandler);
+  }
+
+  _restoreHandlers() {
+    this._setInnerHandlers();
+    this.setSubmitHandler(this._callback.submit);
+  }
+
+  _descriptionInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      description: evt.target.value
+    }, true);
+  }
+
+  _dateDeadlineToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isDueDate: !this._data.isDueDate
+    });
+  }
+
+  _repeatingToggleHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isRepeating: !this._data.isRepeating
+    });
   }
 
   _submitHandler(evt) {
@@ -149,11 +176,11 @@ export default class EditForm extends BaseComponent {
 
   setSubmitHandler(callback) {
     this._callback.submit = callback;
-    this._form.addEventListener(`submit`, this._callback.submit);
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._submitHandler);
   }
 
   _removeSubmitHandler() {
-    this._form.removeEventListener(`submit`, this._callback.submit);
+    this.getElement().querySelector(`form`).removeEventListener(`submit`, this._submitHandler);
   }
 
   removeElement() {
@@ -200,15 +227,18 @@ export default class EditForm extends BaseComponent {
   updateElement() {
     let prevElement = this.getElement();
     const parent = prevElement.parentElement;
-    this.removeElement();
+    this._element = null;
 
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, prevElement);
+
     prevElement = null;
+    this._restoreHandlers();
+
   }
 
-  updateData(update) {
+  updateData(update, isOnlyData) {
     if (!update) {
       return;
     }
@@ -218,6 +248,10 @@ export default class EditForm extends BaseComponent {
         this._data,
         update
     );
+
+    if (isOnlyData) {
+      return;
+    }
 
     this.updateElement();
   }

@@ -24,6 +24,8 @@ export default class BoardPresenter {
 
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
     this._handleCardChange = this._handleCardChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
+
     this._currentSortType = sortType.DEFAULT;
     this._transformedCardsData = [];
     this._cardPresenter = {};
@@ -55,7 +57,7 @@ export default class BoardPresenter {
   }
 
   _renderCard(cardListElement, cardData) {
-    const cardPresenter = new CardPresenter(cardListElement, this._handleCardChange);
+    const cardPresenter = new CardPresenter(cardListElement, this._handleCardChange, this._handleModeChange);
     cardPresenter.init(cardData);
     this._cardPresenter[cardData.id] = cardPresenter;
   }
@@ -138,5 +140,10 @@ export default class BoardPresenter {
         this._showMoreBtnComponent.removeElement();
       }
     });
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._cardPresenter).forEach((presenter) => presenter.resetView());
   }
 }

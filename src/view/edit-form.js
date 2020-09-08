@@ -1,6 +1,7 @@
 import {CARD_MARK_COLORS} from "../consts.js";
 import {isExpired, isCardRepeating, humanizeDueDate} from "../utils/card.js";
 import BaseComponent from "./base-component.js";
+import Smart from "./smart.js";
 
 const BLANK_EDIT_FORM = {
   color: CARD_MARK_COLORS[0],
@@ -67,6 +68,7 @@ const createTaskEditRepeatingTemplate = (repeating, isRepeating) => {
 
 export const createEditFormHtml = (editFormData) => {
   const {color, description, dueDate, repeating, isDueDate, isRepeating} = editFormData;
+  const isSubmitBtnDisabled = isRepeating && !isCardRepeating(repeating);
 
   const dateTemplate = createTaskEditDateTemplate(dueDate, isDueDate);
   const deadlineClassName = isDueDate ? `card--deadline` : ``;
@@ -110,7 +112,7 @@ export const createEditFormHtml = (editFormData) => {
           </div>
 
           <div class="card__status-btns">
-            <button class="card__save" type="submit">save</button>
+            <button class="card__save" type="submit" ${isSubmitBtnDisabled ? `disabled` : ``}>save</button>
             <button class="card__delete" type="button">delete</button>
           </div>
         </div>
@@ -119,7 +121,7 @@ export const createEditFormHtml = (editFormData) => {
   );
 };
 
-export default class EditForm extends BaseComponent {
+export default class EditForm extends Smart {
   constructor(formData = BLANK_EDIT_FORM) {
     super();
     this._formData = formData;
@@ -137,11 +139,23 @@ export default class EditForm extends BaseComponent {
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._dateDeadlineToggleHandler = this._dateDeadlineToggleHandler.bind(this);
     this._repeatingToggleHandler = this._repeatingToggleHandler.bind(this);
+    this._repeatingChangeHandler = this._repeatingChangeHandler.bind(this);
+    this._colorChangeHandler = this._colorChangeHandler.bind(this);
 
     this.getElement().querySelector(`.card__text`).addEventListener(`input`, this._descriptionInputHandler);
     this.getElement().querySelector(`.card__date-deadline-toggle`).addEventListener(`click`, this._dateDeadlineToggleHandler);
     this.getElement().querySelector(`.card__repeat-toggle`).addEventListener(`click`, this._repeatingToggleHandler);
+
+    if (this._data.isRepeating) {
+      this.getElement().querySelector(`.card__repeat-days-inner`).addEventListener(`change`, this._repeatingChangeHandler);
+    }
+    this.getElement().querySelector(`.card__colors-wrap`).addEventListener(`change`, this._colorChangeHandler);
   }
+
+  reset(formData) {
+    this.updateData(this._parseCardToData(formData));
+  }
+
 
   _restoreHandlers() {
     this._setInnerHandlers();
@@ -158,14 +172,16 @@ export default class EditForm extends BaseComponent {
   _dateDeadlineToggleHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isDueDate: !this._data.isDueDate
+      isDueDate: !this._data.isDueDate,
+      isRepeating: false,
     });
   }
 
   _repeatingToggleHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isRepeating: !this._data.isRepeating
+      isRepeating: !this._data.isRepeating,
+      isDueDate: false,
     });
   }
 
@@ -224,35 +240,21 @@ export default class EditForm extends BaseComponent {
     return data;
   }
 
-  updateElement() {
-    let prevElement = this.getElement();
-    const parent = prevElement.parentElement;
-    this._element = null;
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, prevElement);
-
-    prevElement = null;
-    this._restoreHandlers();
-
+  _repeatingChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      repeating: Object.assign(
+          {},
+          this._data.repeating,
+          {[evt.target.value]: evt.target.checked}
+      )
+    });
   }
 
-  updateData(update, isOnlyData) {
-    if (!update) {
-      return;
-    }
-
-    this._data = Object.assign(
-        {},
-        this._data,
-        update
-    );
-
-    if (isOnlyData) {
-      return;
-    }
-
-    this.updateElement();
+  _colorChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      color: evt.target.value
+    });
   }
 }

@@ -1,7 +1,10 @@
 import {CARD_MARK_COLORS} from "../consts.js";
-import {isExpired, isCardRepeating, humanizeDueDate} from "../utils/card.js";
+import {isCardRepeating, formatTaskDueDate} from "../utils/card.js";
 import BaseComponent from "./base-component.js";
 import Smart from "./smart.js";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const BLANK_EDIT_FORM = {
   color: CARD_MARK_COLORS[0],
@@ -24,7 +27,7 @@ const createTaskEditDateTemplate = (dueDate, isDueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
       date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
     </button>
-    ${isDueDate ? `<fieldset class="card__date-deadline"><label class="card__input-deadline-wrap"><input class="card__date" type="text" placeholder="" name="date" value="${humanizeDueDate(dueDate)}"/></label></fieldset>` : ``}
+    ${isDueDate ? `<fieldset class="card__date-deadline"><label class="card__input-deadline-wrap"><input class="card__date" type="text" placeholder="" name="date" value="${dueDate !== null ? formatTaskDueDate(dueDate) : ``}"/></label></fieldset>` : ``}
   `;
 };
 
@@ -71,11 +74,11 @@ export const createEditFormHtml = (editFormData) => {
   const isSubmitBtnDisabled = isRepeating && !isCardRepeating(repeating);
 
   const dateTemplate = createTaskEditDateTemplate(dueDate, isDueDate);
-  const deadlineClassName = isDueDate ? `card--deadline` : ``;
+
   const repeatingClassName = isRepeating ? `card--repeat` : ``;
 
   return (
-    `<article class="card card--edit card--${color} ${deadlineClassName} ${repeatingClassName}">
+    `<article class="card card--edit card--${color}  ${repeatingClassName}">
       <form class="card__form" method="get">
         <div class="card__inner">
           <div class="card__color-bar">
@@ -126,9 +129,14 @@ export default class EditForm extends Smart {
     super();
     this._formData = formData;
     this._data = this._parseCardToData(this._formData);
+    this._datepicker = null;
+
     this._submitHandler = this._submitHandler.bind(this);
+    this._dueDateChangeHandler = this._dueDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+
+    this._setDatepicker();
   }
 
   _getTemplate() {
@@ -160,6 +168,7 @@ export default class EditForm extends Smart {
   _restoreHandlers() {
     this._setInnerHandlers();
     this.setSubmitHandler(this._callback.submit);
+    this._setDatepicker();
   }
 
   _descriptionInputHandler(evt) {
@@ -255,6 +264,32 @@ export default class EditForm extends Smart {
     evt.preventDefault();
     this.updateData({
       color: evt.target.value
+    });
+  }
+
+  _setDatepicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    if (this._data.isDueDate) {
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`.card__date`),
+          {
+            dateFormat: `j F`,
+            defaultDate: this._data.dueDate,
+            onChange: this._dueDateChangeHandler
+          }
+      );
+    }
+  }
+
+  _dueDateChangeHandler([userDate]) {
+    userDate.setHours(23, 59, 59, 999);
+
+    this.updateData({
+      dueDate: userDate
     });
   }
 }

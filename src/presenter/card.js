@@ -1,7 +1,7 @@
 import CardView from "../view/card.js";
 import EditForm from "../view/edit-form.js";
 import {RenderPosition} from "../consts.js";
-import {render} from "../utils/render.js";
+import {render, replace} from "../utils/render.js";
 
 const ESC_KEY_CODE = 27;
 const Mode = {

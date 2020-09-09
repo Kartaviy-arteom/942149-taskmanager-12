@@ -1,3 +1,4 @@
+import moment from "moment";
 
 export const isCardRepeating = (repeating) => {
   return Object.values(repeating).some(Boolean);
@@ -68,5 +69,13 @@ export const sortTaskDown = (taskA, taskB) => {
   }
 
   return taskB.dueDate.getTime() - taskA.dueDate.getTime();
+};
+
+export const formatTaskDueDate = (dueDate) => {
+  if (!(dueDate instanceof Date)) {
+    return ``;
+  }
+
+  return moment(dueDate).format(`D MMMM`);
 };
 

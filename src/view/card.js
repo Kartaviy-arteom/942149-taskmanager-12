@@ -1,9 +1,9 @@
-import {isExpired, isCardRepeating, humanizeDueDate} from "../utils/card.js";
+import {isExpired, isCardRepeating, formatTaskDueDate} from "../utils/card.js";
 import BaseComponent from "./base-component.js";
 
 const createCardHtml = (cardData) => {
   const {description, dueDate, repeating, color, isFavorite, isArchive} = cardData;
-  const date = dueDate !== null ? humanizeDueDate(dueDate) : ``;
+  const date = dueDate !== null ? formatTaskDueDate(dueDate) : ``;
 
   const deadlineClassName = isExpired(dueDate) ? `card--deadline` : ``;
   const repeatingClassName = isCardRepeating(repeating) ? `card--repeat` : ``;

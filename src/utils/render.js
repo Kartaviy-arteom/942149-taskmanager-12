@@ -32,3 +32,21 @@ export const createElement = (template) => {
 
   return newElement.firstChild;
 };
+
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof BaseComponent) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof BaseComponent) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error(`Щэф, все пропало...`);
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};

@@ -1,6 +1,6 @@
 import {CARD_MARK_COLORS} from "../consts.js";
 import {isCardRepeating, formatTaskDueDate} from "../utils/card.js";
-import BaseComponent from "./base-component.js";
+
 import Smart from "./smart.js";
 import flatpickr from "flatpickr";
 

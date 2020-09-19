@@ -6,15 +6,23 @@ import {render} from "./utils/render.js";
 import {RenderPosition} from "./consts.js";
 import BoardPresenter from "./presenter/board.js";
 
-const CARD_QUANTITY = 70;
+import CardsModel from "./model/card.js";
 
-const tasks = Array.from(Array(CARD_QUANTITY), createTask);
-const filters = generateFilter(tasks);
+const CARD_QUANTITY = 35;
+
+
+const cards = Array.from(Array(CARD_QUANTITY), createTask);
+const filters = generateFilter(cards);
+
+const cardsModel = new CardsModel();
+cardsModel.setCards(cards);
+
 
 const pageMainBlock = document.querySelector(`.main`);
 const controlPanelWrapper = pageMainBlock.querySelector(`.main__control`);
 
 render(controlPanelWrapper, new ControlPanel().getElement(), RenderPosition.BEFOREEND);
 render(pageMainBlock, new FilterPanel(filters).getElement(), RenderPosition.BEFOREEND);
-const boardPresenter = new BoardPresenter(pageMainBlock);
-boardPresenter.init(tasks);
+
+const boardPresenter = new BoardPresenter(pageMainBlock, cardsModel);
+boardPresenter.init();

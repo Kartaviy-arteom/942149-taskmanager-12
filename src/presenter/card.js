@@ -1,6 +1,6 @@
 import CardView from "../view/card.js";
 import EditForm from "../view/edit-form.js";
-import {RenderPosition} from "../consts.js";
+import {RenderPosition, UserAction, UpdateType} from "../consts.js";
 import {render, replace} from "../utils/render.js";
 
 const ESC_KEY_CODE = 27;
@@ -86,6 +86,8 @@ export default class Card {
   _onFavoriteClick(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_CARD,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._cardData,
@@ -99,6 +101,8 @@ export default class Card {
   _onArchiveClick(evt) {
     evt.preventDefault();
     this._changeData(
+        UserAction.UPDATE_CARD,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._cardData,
@@ -116,7 +120,10 @@ export default class Card {
   }
 
   _onEditFormSubmit(data) {
-    this._changeData(data);
+    this._changeData(
+      UserAction.UPDATE_TASK,
+      UpdateType.MINOR,
+      data);
     this._replaceEditToCard();
     document.removeEventListener(`keydown`, this._onEscKeyDown);
   }

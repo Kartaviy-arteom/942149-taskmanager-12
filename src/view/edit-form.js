@@ -250,7 +250,7 @@ export default class EditForm extends Smart {
   }
 
   _repeatingChangeHandler(evt) {
-    evt.preventDefault();
+
     this.updateData({
       repeating: Object.assign(
           {},
@@ -261,7 +261,7 @@ export default class EditForm extends Smart {
   }
 
   _colorChangeHandler(evt) {
-    evt.preventDefault();
+
     this.updateData({
       color: evt.target.value
     });

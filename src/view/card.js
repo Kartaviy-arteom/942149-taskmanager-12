@@ -84,14 +84,20 @@ export default class Card extends BaseComponent {
 
 
   _removeFavoriteClickHandler() {
-    this.getElement().querySelector(`.card__btn--favorites`).removeEventListener(`click`, this._callback.favoriteClick);
+    if (this._callback.favoriteClick) {
+      this.getElement().querySelector(`.card__btn--favorites`).removeEventListener(`click`, this._callback.favoriteClick);
+    }
   }
 
   _removeArchiveClickHandler() {
-    this.getElement().querySelector(`.card__btn--archive`).removeEventListener(`click`, this._callback.archiveClick);
+    if (this._callback.archiveClick) {
+      this.getElement().querySelector(`.card__btn--archive`).removeEventListener(`click`, this._callback.archiveClick);
+    }
   }
   _removeEditHandler() {
-    this._btnEdit.removeEventListener(`click`, this._callback.edit);
+    if (this._callback.edit) {
+      this._btnEdit.removeEventListener(`click`, this._callback.edit);
+    }
   }
 
   removeElement() {
